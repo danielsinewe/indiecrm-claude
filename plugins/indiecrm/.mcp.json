@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "indiecrm": { "type": "http", "url": "https://indiecrm.app/mcp" }
+  }
+}
