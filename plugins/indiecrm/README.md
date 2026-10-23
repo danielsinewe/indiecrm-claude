@@ -1,8 +1,32 @@
 # IndieCRM for Claude
 
-Connect [IndieCRM](https://indiecrm.app) to Claude, Cowork, and Claude Code.
-Review your sales pipeline, search contacts and companies, create and move deals,
-log activities, and save verified lead research using your existing account.
+![IndieCRM](assets/logo.png)
+
+Your sales pipeline, one conversation away. Connect IndieCRM to Claude to review
+open deals, find the right contact, and keep your pipeline current while you work.
+Works with Claude, Cowork, and Claude Code using your existing IndieCRM account.
+
+## Put your pipeline to work
+
+| Workflow | What Claude can do |
+| --- | --- |
+| Pipeline review | Review recent open deals, group values by currency, and suggest next steps. |
+| Contact lookup | Find contacts and companies in the workspace you choose. |
+| Deal updates | Create deals, move them between pipeline stages, and record notes or calls. |
+| Research handoff | Save verified lead research and available images to New leads, for workspaces with private beta access. |
+
+## Start with a conversation
+
+> Review my open deals. Which ones should I focus on this week, and why?
+
+> Find Acme in my contacts and show me what is saved about the company.
+
+> Move the Acme demo deal to Negotiation and record that the demo went well.
+
+> Save this verified Sales Navigator lead list to New leads in my workspace.
+
+Claude uses records returned by IndieCRM and asks when a target is ambiguous.
+Research imports require verified Sales Navigator lead URLs and New leads beta access.
 
 ## Claude and Cowork
 
