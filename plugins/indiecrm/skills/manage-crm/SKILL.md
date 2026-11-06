@@ -1,6 +1,6 @@
 ---
 name: manage-crm
-description: Use when the user wants to review or update their IndieCRM pipeline, find contacts or companies, create or move a deal, or log a deal activity.
+description: Use when the user wants to work with their IndieCRM pipeline, contacts, companies or products, log activities, or connect an allowed browser for verified lead research.
 ---
 
 # Work with IndieCRM
@@ -22,6 +22,31 @@ activity requires a separate request to record it.
 For a request combining supported and unsupported actions, perform only the
 supported changes the user explicitly requested and explain the remaining limit.
 
+## Continue after connecting
+
+After a successful connection check, use the conversation to decide the next
+step. A bare “connected successfully” is not the endpoint when the user wants
+to work in IndieCRM.
+
+- If workspace **and** desired task are missing, ask one short natural follow-up
+  covering both. Offer suitable workspace names actually returned by
+  `list_workspaces`; never guess names or automatically pick the first workspace.
+  For example, in German: “In welchem Workspace möchtest du arbeiten, und was
+  möchtest du dort tun?” Add a few relevant actual names when helpful.
+- If the workspace is already clearly chosen, keep its app ID and ask only for
+  the missing task. If the task is already clear, keep it and ask only for the
+  missing workspace. When both are clear, continue the existing authorized task
+  immediately without repeating questions or asking permission again.
+- With one returned workspace and no chosen scope, mention its actual name in
+  the same brief question rather than silently selecting it. With no accessible
+  workspace, explain the access result and clarify the intended destination;
+  do not invent a workspace or task.
+- If the user explicitly requested **only a connection test**, confirm the result
+  briefly and stop. Do not force a follow-up task or workspace interview.
+- In voice, use the user's language and a short natural question. Avoid technical
+  tool, OAuth, app-ID or connection explanations. Preserve an ongoing task across
+  sign-in and reconnects; successful authentication does not erase its scope.
+
 ## Choose the workspace
 
 1. Call `list_workspaces`. Each workspace contains `apps`; an app's `id` is the
@@ -36,6 +61,84 @@ If the connection requires authentication, use the host's IndieCRM connection
 flow. Let the user sign in and approve OAuth there. Keep credentials out of chat,
 plugin files, and tool arguments.
 
+## Build an audience first
+
+For 1–3 CRM/contact-profile seeds or a step-by-step Sales Navigator filter
+interview, use the packaged [sales-navigator-audience](../sales-navigator-audience/SKILL.md)
+skill. It owns persisted drafts, observed count limitations after each real
+filter change, exact source URLs and a separate collection preparation step.
+Do not require a particular reference person or a local Mac skill path.
+
+## Connect an allowed browser and continue research
+
+When asked to connect research, inspect the host's actual browser capabilities:
+ChatGPT cloud browser first, then ChatGPT in-app browser. Call
+`prepare_browser_connection` with those capabilities, the exact appId/productId,
+validated SearchSpec, a stable sessionId and an explicit limit (at most 25).
+Follow its normal browser URLs and reuse the existing permitted source tab in
+the background. The returned plan does not open the browser or prove sign-in.
+
+Verify the actual Sales Navigator UI, account name and observed own-profile URL.
+Report pending login, consent or security challenges precisely; pause only the
+steps needing that human action and resume the same request afterward. Never
+read browser cookies, native headers, tokens or private storage. Native Chrome
+extension pairing can remain offline while the permitted host UI works; do not
+start Chrome or relabel pairing as a verified host connection.
+
+For the recorded profile-to-audience method, follow the packaged audience skill.
+If the separately installed sales-navigator-lead-search skill is available,
+consult its profile-to-audience reference for additional recording context. Resolve the exact named
+reference person from an observed profile URL; a same-name company is not the
+person. Derive the audience from actual reference evidence and requested criteria.
+Do not invent buyer roles from seller product features or copy demonstration
+filters as defaults. If identity is unresolved, ask only for the missing name or
+profile URL. Provide audienceEvidence with the actual observed final search URL;
+without that evidence the handoff blocks collection. This input records the host's
+observations; the server does not independently attest their truth.
+
+Before writes, read all relevant completed research lists and every page of leads
+in the exact scope. Freeze this baseline artifact even when empty. Compare exact,
+case-sensitive source identities and record new/reused/held counts. Inspect the
+actual audience filters and requested page coverage. Normalize the eligible new
+rows into an artifact bound to audience, scope, baseline and reviewed position
+decisions. Its SHA-256 is start_research_batch.sourceSha256. The handoff workflowId
+is only an orchestration identifier and MUST NOT be used as the import digest.
+Reuse the original artifacts and receipts on retry; no new rows means no new batch.
+
+Observe at most the requested bound, preserve actual profile/employer links, and
+stop on account change or rate limit. Department is Unspecified unless an actual
+source Function field was observed; never infer it from a title. Save only new,
+unique eligible people with managed private images. Finishing the batch triggers
+automatic creation/reuse of CRM contacts, companies and saved-list memberships;
+it does not create pipeline deals. Existing saved rows and contacts must not be
+silently rewritten after a mistaken audience selection. Label partial coverage
+and unverified audience fit honestly. Do not switch to a metered provider or send
+outreach without its own authorization. The CLI UI-RESEARCH visible observation
+protocol and MCP retain the same scoped save API.
+
+## Manage products by stable ID
+
+Use `list_products` with the selected workspace ID and follow `nextOffset` until
+null. Use `get_product` for the exact `productId`. Equal names remain separate
+products; never merge, update or delete a same-name sibling without its exact ID.
+Products use `workspaceId`, while CRM records and research use the app/data scope.
+
+- `create_product`: supply workspaceId and name; optional color, websiteUrl and
+  productContext use the existing product fields. Supply a fresh requestId once
+  and reuse it after an uncertain response. A retry returns the same product ID
+  without overwriting it. No website fetching or AI research occurs.
+- `update_product`: supply workspaceId, productId and patch. Patch accepts name,
+  color, websiteUrl (null clears it), and productContext. Only supplied context
+  fields change; omitted saved facts and sources remain. Product and workspace
+  IDs are immutable. If a concurrent edit is reported, read again before retrying.
+- `delete_product`: permanently removes only the exact identified product. CRM
+  records remain; product assignments follow the app's existing clearing/backfill
+  rules. Resolve the target ID first and explain that effect when relevant.
+
+Use the live tool schema. CLI `indiecrm call` invokes the same API and permissions;
+there is no separate CLI product-write implementation. Respect the selected
+workspace and existing plan limit. Never test writes against real saved products.
+
 ## Review the pipeline and find records
 
 | Tool             | Use                                                                             |
@@ -45,11 +148,10 @@ plugin files, and tool arguments.
 | `list_contacts`  | List contacts or search by their full name.                                     |
 | `list_companies` | List companies or search by their company name.                                 |
 
-The three record-list tools return at most 200 rows; their default is 50. They
-provide no pagination. Deal results are ordered by most recently updated;
-contacts and companies are ordered by most recently created. Explain the limit
-when the result reaches the requested maximum. Base totals and recommendations
-on the records actually returned, and identify them as a sample when appropriate.
+The three record-list tools return at most 200 rows per page; their default is 50. Continue with the returned nextOffset until null before claiming complete
+coverage. Deal results are ordered by most recently updated; contacts and
+companies are ordered by most recently created. Base totals and recommendations
+on the records actually returned, and identify partial coverage when appropriate.
 Group deal values by currency instead of summing different currencies together.
 
 `list_deals` does not provide a deal-name search. Match the user's deal against
@@ -70,8 +172,9 @@ change already authorizes it.
   defaults to value 0, currency USD, and the first stage of the app's default
   pipeline (or its first pipeline if none is marked default). State those
   defaults when relevant. Resolve linked contacts and companies with the list
-  tools. If the user specifies a stage, verify it belongs to the selected default
-  pipeline: this tool selects that pipeline even when a stage ID is provided.
+  tools. If the user specifies a stage, verify it belongs to the intended pipeline.
+  Existing company opportunities may require an explicit selection; use forceNew
+  only when the user asked for a separate opportunity, and never retry blindly.
 - `move_deal` requires `dealId` and `stageId`. Resolve the deal in the chosen app
   and the destination stage in its pipeline. The server updates the stage;
   report the returned status instead of assuming a move marked the deal won or
@@ -101,6 +204,6 @@ simple lookup. CLI setup tools concern a pending setup request from Apps & CLI;
 use them only when the user explicitly asks to complete that setup.
 
 CRM tools do not offer arbitrary contact or company creation and field edits,
-delete records, send messages, schedule meetings, or expose activity history.
+contact/company deletion, message sending, calendar scheduling or full activity history.
 Explain the available path in the IndieCRM app when the requested action needs
 those features.

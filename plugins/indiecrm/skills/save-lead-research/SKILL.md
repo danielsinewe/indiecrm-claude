@@ -26,6 +26,14 @@ the current importer requires LinkedIn Sales Navigator profile URLs containing
 `/sales/lead/`. A normal `/in/` profile URL alone is not importable. Retain those
 rows for review; do not fabricate Sales Navigator URLs.
 
+For Sales Navigator audience design, use the packaged
+[sales-navigator-audience](../sales-navigator-audience/SKILL.md) skill first.
+Selection and saved draft state do not imply collection authorization. Before
+writes freeze the complete scope-bound saved-list baseline, including empty
+baselines, compute new/reused/held decisions, and hash the frozen normalized import
+artifact rather than an orchestration/workflow ID. Keep department Unspecified
+unless an actual source Function was observed.
+
 ## Save a list
 
 1. Prepare the verified, importable leads and deduplicate their Sales Navigator
@@ -42,8 +50,9 @@ rows for review; do not fabricate Sales Navigator URLs.
    and `batchId` fixed. Each call upserts by lead identity. Stop on errors and
    retain the source and batch ID for a retry.
 5. Call `finish_research_batch` only after all expected leads have been saved.
-   The server checks the stored lead count and makes the completed list visible
-   in New leads. Report the returned count and the destination workspace.
+   The server checks the stored lead count, makes the completed list visible
+   in New leads, and automatically creates/reuses CRM contacts, companies and
+   saved-list memberships through the existing completion trigger. Report the returned count and the destination workspace.
 6. Once the list is complete, optionally call `save_research_images` with
    authorized image files in groups of at most 8. This tool requires a completed
    list. Include the real `https://media.licdn.com` source URL and base64-encoded

@@ -1,11 +1,20 @@
 {
   "name": "indiecrm",
   "displayName": "IndieCRM",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Review your sales pipeline, find contacts and companies, create and move deals, log activities, and save verified lead research using your IndieCRM account.",
-  "author": { "name": "IndieCRM", "url": "https://indiecrm.app" },
+  "author": {
+    "name": "IndieCRM",
+    "url": "https://indiecrm.app"
+  },
   "homepage": "https://indiecrm.app/claude",
   "repository": "https://github.com/danielsinewe/indiecrm-claude",
   "license": "MIT",
-  "keywords": ["crm", "sales", "pipeline", "contacts", "research"]
+  "keywords": [
+    "crm",
+    "sales",
+    "pipeline",
+    "contacts",
+    "research"
+  ]
 }

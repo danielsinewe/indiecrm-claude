@@ -1,15 +1,26 @@
 {
   "name": "indiecrm-plugins",
-  "owner": { "name": "IndieCRM", "email": "hello@danielsinewe.com" },
-  "metadata": { "description": "IndieCRM connectors and guided CRM workflows for Claude." },
+  "owner": {
+    "name": "IndieCRM",
+    "email": "hello@danielsinewe.com"
+  },
+  "metadata": {
+    "description": "IndieCRM connectors and guided CRM workflows for Claude."
+  },
   "plugins": [
     {
       "name": "indiecrm",
       "source": "./plugins/indiecrm",
       "description": "Review your pipeline, manage deals, and save verified lead research with your IndieCRM account.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "productivity",
-      "keywords": ["crm", "sales", "pipeline", "contacts", "research"]
+      "keywords": [
+        "crm",
+        "sales",
+        "pipeline",
+        "contacts",
+        "research"
+      ]
     }
   ]
 }
