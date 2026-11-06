@@ -41,8 +41,8 @@ Research imports require verified Sales Navigator lead URLs and New leads beta a
 For the guided workflows, download
 [indiecrm-claude.zip](https://github.com/danielsinewe/indiecrm-claude/releases/latest/download/indiecrm-claude.zip).
 Open **Customize → Plugins → Add → Upload plugin**, select the ZIP, and connect
-IndieCRM on the plugin's **Connectors** tab. The package contains two skills:
-`manage-crm` and `save-lead-research`.
+IndieCRM on the plugin's **Connectors** tab. The package contains three skills:
+`manage-crm`, `sales-navigator-audience` and `save-lead-research`.
 
 ## Claude Code
 
