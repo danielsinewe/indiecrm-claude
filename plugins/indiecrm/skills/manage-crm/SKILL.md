@@ -11,7 +11,7 @@ schemas before calling them; the host may prefix their names.
 
 ## Check the requested action first
 
-These tools cannot send email, schedule calendar meetings, or delete contacts
+These tools cannot send arbitrary email, schedule calendar meetings, or delete contacts
 and companies. If the request only asks for one of those actions, explain the
 limit without calling any IndieCRM tool, including workspace or record lookups.
 Do not log an activity as a substitute, claim success, or use browser automation
@@ -21,6 +21,30 @@ activity requires a separate request to record it.
 
 For a request combining supported and unsupported actions, perform only the
 supported changes the user explicitly requested and explain the remaining limit.
+
+## Request an existing member to connect LinkedIn
+
+For an explicitly requested personal LinkedIn search connection, an owner or
+admin can use `list_workspace_members` to resolve the exact existing member in
+the chosen app, then `create_member_connection_request`. This narrow product
+email is supported; it is not arbitrary outreach, a membership invitation, or
+LinkedIn publishing authorization. Use the stored member user ID, never a guessed
+email. The server checks the current verified account email before sending.
+
+Choose one UUID `requestId` for this logical request and retain it. `sendEmail`
+defaults to true; set it false to prepare without sending. If delivery is
+uncertain, read `get_member_connection_request` and its provider receipt; never
+create another ID or blindly repeat a send. `list_member_connection_requests`
+is paginated; continue `nextOffset` until null. `revoke_member_connection_request`
+invalidates an unfulfilled request without changing membership or disconnecting
+an existing account.
+
+Report pending, accepted, connected, expired and revoked separately. Mail
+provider acceptance is not delivery, member acceptance or a verified connection.
+Only the named recipient personally accepts the expiring link and completes the
+normal IndieCRM Connect setup in the exact workspace. Never accept for them,
+capture credentials or session cookies, or claim Sales Navigator access from
+request acceptance alone. Web, MCP and CLI use the same permission checks.
 
 ## Continue after connecting
 
@@ -46,6 +70,29 @@ to work in IndieCRM.
 - In voice, use the user's language and a short natural question. Avoid technical
   tool, OAuth, app-ID or connection explanations. Preserve an ongoing task across
   sign-in and reconnects; successful authentication does not erase its scope.
+
+
+## Keep product choices grounded in saved records
+
+Keep the chosen workspace/app and ongoing task across digressions, sign-in and
+reconnects. Resume them without another workspace question unless the user
+changes scope or access is lost. Retain an already selected exact product ID.
+
+Before offering product choices, call `list_products` in that exact workspace
+without a search filter and follow every `nextOffset` until null. Combine all
+actual rows across pages; a partial page or filtered search is not the complete
+inventory. Offer only the exact returned names together with their immutable
+product IDs. Use `get_product` to inspect saved context when needed. Keep
+same-name products as separate records, even when their names match exactly;
+ask only the minimal distinguishing question if a choice remains necessary.
+
+Context inferred from an email, reference person or company must be explicitly
+labeled as an inference and kept separate from saved product choices. Never
+turn an inferred service description into a product name or ID, present it as a
+saved product, or create a product to make the inference appear real. For
+example, correspondence about dashboard consulting does not establish a saved
+product named Dashboard-/Power-BI-Beratung. Use actual inventory evidence;
+example names are never default product choices.
 
 ## Choose the workspace
 

@@ -17,6 +17,29 @@ and `list_products`/`get_product`. Follow pagination. Do not confuse a workspace
 UUID with its app/data-scope UUID or merge same-name products. Inspect live tool
 schemas before calls. Keep source URLs and seed details private.
 
+
+## Keep product choices grounded in saved records
+
+Keep the chosen workspace/app and ongoing task across digressions, sign-in and
+reconnects. Resume them without another workspace question unless the user
+changes scope or access is lost. Retain an already selected exact product ID.
+
+Before offering product choices, call `list_products` in that exact workspace
+without a search filter and follow every `nextOffset` until null. Combine all
+actual rows across pages; a partial page or filtered search is not the complete
+inventory. Offer only the exact returned names together with their immutable
+product IDs. Use `get_product` to inspect saved context when needed. Keep
+same-name products as separate records, even when their names match exactly;
+ask only the minimal distinguishing question if a choice remains necessary.
+
+Context inferred from an email, reference person or company must be explicitly
+labeled as an inference and kept separate from saved product choices. Never
+turn an inferred service description into a product name or ID, present it as a
+saved product, or create a product to make the inference appear real. For
+example, correspondence about dashboard consulting does not establish a saved
+product named Dashboard-/Power-BI-Beratung. Use actual inventory evidence;
+example names are never default product choices.
+
 ## Choose one starting mode
 
 - **Seeds / lookalike:** `start_sales_navigator_audience` with mode

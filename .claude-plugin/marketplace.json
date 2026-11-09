@@ -12,7 +12,7 @@
       "name": "indiecrm",
       "source": "./plugins/indiecrm",
       "description": "Review your pipeline, manage deals, and save verified lead research with your IndieCRM account.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "category": "productivity",
       "keywords": [
         "crm",
