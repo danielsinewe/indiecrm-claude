@@ -75,6 +75,28 @@ example names are never default product choices.
   automatic buyer targeting. When the user delegates choices, make provisional
   evidence-based choices and explain them without demanding another interview.
 
+### Company name from the person profile
+
+Read the company name as an input from the verified LinkedIn **person/contact
+profile**. The user need not supply or correct it. Inspect the visible company
+field and current Experience roles, their dates/Present labels and actual company
+links; preserve parallel current roles rather than choosing the first employer.
+A title, historical email signature, seller product or saved CRM company is not
+this input. Record the exact observed company in `verify_audience_seed.company`,
+plus `companyProfileUrl` and `companyRoleDateLabel` when actually visible; explain
+missing links or ambiguous roles in `evidence` without inventing them.
+
+Use the returned `referenceInputs[seedIndex].companyName` for the next company
+input. It comes from the verified person observation; `state.seeds[].company`
+may still be historical CRM context. Pass the observed name unchanged to a
+company-name control when that step is intended; do not substitute the person's
+job title or automatically add a Current job title filter. Match a suggested
+company against its observed link before selection. A company page may support
+the person's employer link; it does not replace reading the contact profile.
+Keep inferred company traits and broader audience filters separate from this
+source input. If the source is unavailable, preserve the checkpoint and report
+that source gap instead of asking the user to type a company the profile exposes.
+
 Both modes use the same persisted draft and filter loop. A named reference such
 as Buse is an input to one instance, never a requirement for the product flow.
 No demo's geography, size, CXO level, activity or tenure is a default.

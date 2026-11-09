@@ -19,7 +19,7 @@ that app. Each person needs independent visible-source verification.
 | tool                           | Fields / purpose                                                                                                              |
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
 | request_audience_filter_change | instruction: precise intended addition/removal; invalidates observation and final selection                                   |
-| verify_audience_seed           | seedIndex, observedProfileUrl, linkedIdentityUrls, fullName, company, location, title, evidence, sourceAccountUrl, observedAt |
+| verify_audience_seed           | seedIndex, observedProfileUrl, linkedIdentityUrls, fullName, company, location, title, evidence, sourceAccountUrl, observedAt; optional observed companyProfileUrl, companyRoleDateLabel |
 | observe_audience_search        | actual searchUrl, visibleFilterSummary, count, sourceAccountUrl, observedAt; parses actual URL spec                           |
 | finalize_audience              | selectionBasis; requires observed audience and count, and every seed verified                                                 |
 | archive_audience               | ends this draft; does not delete any contacts, lists or source results                                                        |
@@ -69,3 +69,5 @@ at 100 steps and 256KiB per draft; an explicit error preserves the old state.
    actually observed. Finishing materializes contacts/companies/list memberships
    automatically. No pipeline deal creation, paid fallback, enrichment or outreach
    follows from designing/selecting an audience.
+
+`referenceInputs` is the read-only downstream input derived from each seed verification. Its `companyName` comes only from the observed person profile, never historical CRM context. Unverified seeds return null. Company links and role dates remain null when not observed; older verified drafts remain readable without a rewrite. Preserve the exact person URL and evidence alongside this input.
