@@ -9,16 +9,28 @@ that app. Each person needs independent visible-source verification.
    A repeated requestId with changed inputs is rejected.
 2. Read/resume: `get_sales_navigator_audience({appId,draftId})`. Listing accepts
    optional exact productId, offset and limit; follow nextOffset until null.
-3. Every update uses `{appId,draftId,expectedRevision,operationId,operation}`.
-   The operation union supports:
+3. Before draft or browser mutations, inspect the actual host's executable tool
+   inventory. Server schema discovery is not host availability. Missing native
+   steps stop the workflow at its saved checkpoint without any pending-request,
+   revision or UI change. No local CLI/SDK/direct-HTTP/generic-executor fallback.
+   Each ordinary product update uses `{appId,draftId,expectedRevision,operationId}`
+   plus the operation's fields directly, without an `operation` selector:
 
-| action                | Fields / purpose                                                                                                              |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| request_filter_change | instruction: precise intended addition/removal; invalidates observation and final selection                                   |
-| verify_seed           | seedIndex, observedProfileUrl, linkedIdentityUrls, fullName, company, location, title, evidence, sourceAccountUrl, observedAt |
-| observe_search        | actual searchUrl, visibleFilterSummary, count, sourceAccountUrl, observedAt; parses actual URL spec                           |
-| finalize_audience     | selectionBasis; requires observed audience and count, and every seed verified                                                 |
-| archive               | ends this draft; does not delete any contacts, lists or source results                                                        |
+| tool                           | Fields / purpose                                                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| request_audience_filter_change | instruction: precise intended addition/removal; invalidates observation and final selection                                   |
+| verify_audience_seed           | seedIndex, observedProfileUrl, linkedIdentityUrls, fullName, company, location, title, evidence, sourceAccountUrl, observedAt |
+| observe_audience_search        | actual searchUrl, visibleFilterSummary, count, sourceAccountUrl, observedAt; parses actual URL spec                           |
+| finalize_audience              | selectionBasis; requires observed audience and count, and every seed verified                                                 |
+| archive_audience               | ends this draft; does not delete any contacts, lists or source results                                                        |
+
+Require request/change, observation and finalization tools before starting;
+require seed verification only for unverified seeds, and archive only when
+requested. `update_sales_navigator_audience` and
+`record_sales_navigator_audience_step` retain the old compatibility contract for
+existing clients; they are not substitute executors for unavailable native
+product operations. Never infer permission or host availability from their
+schema being discoverable.
 
 `linkedIdentityUrls` must include the exact input seed link when one exists and
 the observed profile link. Public and Sales Navigator links can identify the same

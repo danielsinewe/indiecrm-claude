@@ -115,6 +115,12 @@ interview, use the packaged [sales-navigator-audience](../sales-navigator-audien
 skill. It owns persisted drafts, observed count limitations after each real
 filter change, exact source URLs and a separate collection preparation step.
 Do not require a particular reference person or a local Mac skill path.
+Before any audience draft or browser mutation, verify the host can actually call
+the required native request/change, seed-verification, observation and selection
+tools documented by that skill. Schema discovery alone is insufficient. Missing
+operations are a product capability failure: preserve the exact checkpoint and
+stop; never bridge through local CLI/SDK/direct HTTP or complete/reset a pending
+request to imply the normal plugin worked.
 
 ## Connect an allowed browser and continue research
 
