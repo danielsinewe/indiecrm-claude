@@ -90,9 +90,26 @@ Use the returned `referenceInputs[seedIndex].companyName` for the next company
 input. It comes from the verified person observation; `state.seeds[].company`
 may still be historical CRM context. Pass the observed name unchanged to a
 company-name control when that step is intended; do not substitute the person's
-job title or automatically add a Current job title filter. Match a suggested
-company against its observed link before selection. A company page may support
-the person's employer link; it does not replace reading the contact profile.
+job title or automatically add a Current job title filter. Use the visible
+**Current company** field for a current employer.
+
+- Start with the company link recorded on the person's profile. If it uses a
+  public slug, follow that link in the permitted browser and use the actual
+  numeric company ID from its visible Sales Navigator link or rendered DOM,
+  when available. Never infer an ID from the company name.
+- Type the exact company name and wait for the suggestions for that input.
+  Inspect the rendered suggestion's link or stable company ID. When the host
+  provides supported DevTools, passively observe the response triggered by
+  typing and tie the candidate ID to the actual visible suggestion. Keep only
+  the relevant company name and ID from that response.
+- Choose Include or Exclude through the normal UI only when the suggestion
+  matches the reference company ID or the exact company link. If the host
+  cannot establish the match or cannot map it to a unique visible suggestion,
+  preserve the pending step and report the specific missing evidence.
+- After selection, confirm the active company pill and the company ID in the
+  actual search URL. Reopen that full URL in the permitted browser and confirm
+  the same company ID and inclusion or exclusion state before recording the
+  observation. Use the refreshed visible result label from the reopened page.
 Keep inferred company traits and broader audience filters separate from this
 source input. If the source is unavailable, preserve the checkpoint and report
 that source gap instead of asking the user to type a company the profile exposes.
@@ -100,6 +117,35 @@ that source gap instead of asking the user to type a company the profile exposes
 Both modes use the same persisted draft and filter loop. A named reference such
 as Buse is an input to one instance, never a requirement for the product flow.
 No demo's geography, size, CXO level, activity or tenure is a default.
+
+### Use country-level Location
+
+Country is the most granular allowed Location for this audience workflow.
+When deriving Location from a verified profile's city, metro or subnational
+region, verify its country from source evidence and select the exact country
+suggestion in Sales Navigator's Geography control. If the country is ambiguous,
+leave Location unset and record the evidence gap. Keep this distinct from
+company headquarters. Reopen the complete search URL and confirm the included
+country, its actual facet ID and the refreshed result count. When replacing an
+older subnational filter, preserve its observation and record the replacement,
+rationale and before/after result counts in the draft.
+
+## Test additional lookalike filters
+
+A filter passes when the refreshed results still contain every verified
+reference profile by its source identity. Additional people may remain. Use
+professional facets and keep names and direct profile IDs out of candidate
+filters. Test each value against the same baseline before combining it. Use
+the browser's supported JavaScript UI controls to group repeated operations
+when available, and verify the selected filter and refreshed results each time.
+
+Profile text can suggest a candidate facet. Only a live result confirms how
+Sales Navigator classifies the profile. Test function, industry, title,
+headquarters, person location, total experience, company tenure, role tenure
+and profile language separately. Suggestions shown outside applied results
+do not count. Report before/after counts and verified seed presence. Reopen
+the full URL for the intended combination and repeat the identity check before
+saving the selected criteria in IndieCRM.
 
 ## Change, observe, explain
 
@@ -124,6 +170,11 @@ No demo's geography, size, CXO level, activity or tenure is a default.
    an intermediate count, infer count from pagination, or fabricate an opaque
    filter ID. The tool parses the real URL into the saved spec; do not rebuild
    that URL from labels. A stored observation is not live now.
+Keep the result list visible while tuning criteria where the host supports it.
+During refresh, label the last verified results with their previous filters.
+After each change show the active criteria and the before/after observed counts.
+In Voice, mention visible matches when they help decide the next filter.
+
 4. After **each actual filter change**, report the actual new label and its
    limitation, then the next useful choice. For example: “Function Legal now
    shows 1K+; exact total unavailable. Next narrow geography?” This is an example,
